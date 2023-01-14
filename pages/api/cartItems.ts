@@ -5,6 +5,12 @@ type Data = {
   cartItems: CartItemType[];
 };
 
+type Request = {
+  query: {
+    postalCode?: string;
+  };
+};
+
 const stubCartItems: CartItemType[] = [
   {
     id: 1,
@@ -38,8 +44,57 @@ const stubCartItems: CartItemType[] = [
   },
 ];
 
+const DELIVERY_DATES = [
+  {
+    postal: 'V',
+    ids: [2],
+    estimatedDeliveryDate: 'Nov 24, 2021',
+  },
+  {
+    postal: 'V',
+    ids: [1, 3],
+    estimatedDeliveryDate: 'Nov 19, 2021',
+  },
+  {
+    postal: 'M',
+    ids: [2, 3],
+    estimatedDeliveryDate: 'Nov 22, 2021',
+  },
+  {
+    postal: 'M',
+    ids: [1],
+    estimatedDeliveryDate: 'Dec 19, 2021',
+  },
+  {
+    postal: 'K',
+    ids: [1, 2, 3],
+    estimatedDeliveryDate: 'Dec 24, 2021',
+  },
+];
+
 export default function handler(req: Request, res: NextApiResponse<Data>) {
+  const { postalCode } = req.query;
+
+  if (postalCode && ['V', 'M', 'K'].includes(postalCode[0].toUpperCase())) {
+    const firstLetter = postalCode[0];
+    const datesByPostalCode = DELIVERY_DATES.filter((item) => item.postal === firstLetter.toUpperCase());
+
+    const cartItemsWithDates: CartItemType[] = [...stubCartItems];
+
+    cartItemsWithDates.forEach((cartItem, index, theArray) => {
+      datesByPostalCode.forEach((date) => {
+        if (date.ids.includes(cartItem.id)) {
+          theArray[index] = {
+            ...theArray[index],
+            deliveryDate: date.estimatedDeliveryDate,
+          };
+        }
+      });
+    });
+    return res.status(200).json({ cartItems: cartItemsWithDates });
+  }
+
   return res.status(200).json({ cartItems: stubCartItems });
 
-  // there is no reason to create a try catch construction because we don't work with a real data.
+  //   there is no reason to create a try catch construction because we don't work with a real data.
 }
