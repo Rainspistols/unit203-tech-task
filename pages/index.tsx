@@ -73,9 +73,9 @@ const Home = ({ initialCartItems }: Props) => {
 
   useEffect(() => {
     const fetchCartItems = async () => {
-      const { cartItems } = await fetch(`${process.env.websiteURL}/api/cartItems?postalCode=${postalCode}`).then(
-        (data) => data.json()
-      );
+      const { cartItems } = await fetch(
+        `${process.env.websiteURL}/api/cartItems?postalCode=${postalCode}`
+      ).then((data) => data.json());
       setCartItems(cartItems);
     };
 
