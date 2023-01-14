@@ -1,0 +1,10 @@
+# Ignore artifacts:
+.next
+README.md
+.gitignore
+.prettierignore
+.eslintignore
+.npmrc
+.DS_Store
+public
+/**/*.d.ts

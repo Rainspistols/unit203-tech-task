@@ -1,0 +1,20 @@
+name: lint-and-prettier
+
+on: push
+
+jobs:
+  code-style-check-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Installing Node Js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - name: Installing packages in root
+        run: npm i
+      - name: Running lint
+        run: npm run lint-check
+      - name: Running prettier
+        run: npm run prettier-check
